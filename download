@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vitrin — Katalog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16181d; --paper:#f4f1ea; --card:#fbfaf6;
+    --line:#d9d3c5; --muted:#6b6457; --amber:#d96f32; --deep:#1f2a44;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--paper);color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+
+  header{border-bottom:1.5px solid var(--ink);padding:20px clamp(16px,4vw,40px);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+  .brand{font-family:Fraunces,serif;font-weight:900;font-size:clamp(22px,4vw,26px);letter-spacing:-.02em;line-height:1}
+  .brand small{font-family:Inter;font-weight:500;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);display:block;margin-top:4px}
+  nav{display:flex;gap:8px}
+  nav a{font-size:13px;font-weight:600;padding:8px 14px;border:1.5px solid var(--ink);border-radius:999px;white-space:nowrap}
+  nav a.active{background:var(--ink);color:var(--paper)}
+
+  .wrap{max-width:1120px;margin:0 auto;padding:clamp(20px,4vw,32px) clamp(16px,4vw,40px)}
+  .lead{font-family:Fraunces,serif;font-weight:400;font-size:clamp(28px,5vw,50px);line-height:1.05;letter-spacing:-.02em;max-width:16ch;margin:8px 0 28px}
+  .lead em{font-style:italic;color:var(--amber)}
+
+  .controls{border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:clamp(16px,3vw,22px);margin-bottom:26px}
+  .ctl-label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:12px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+  .chip{font-size:13px;font-weight:500;padding:7px 14px;border:1.5px solid var(--line);border-radius:999px;cursor:pointer;user-select:none;transition:.12s;text-transform:capitalize;background:#fff;line-height:1}
+  .chip:hover{border-color:var(--ink)}
+  .chip.on{background:var(--deep);color:#fff;border-color:var(--deep)}
+  .sortrow{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  select{font-family:Inter;font-size:14px;font-weight:500;padding:9px 14px;border:1.5px solid var(--ink);border-radius:8px;background:#fff;cursor:pointer;max-width:100%}
+  .clearbtn{font-size:12px;font-weight:600;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline}
+  .count{font-size:13px;color:var(--muted);margin-left:auto;white-space:nowrap}
+
+  .tablewrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{width:100%;border-collapse:collapse;table-layout:fixed;min-width:560px}
+  col.c-user{width:26%}
+  col.c-cat{width:20%}
+  col.c-fol{width:14%}
+  col.c-eng{width:14%}
+  col.c-mail{width:26%}
+  thead th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 12px 10px;border-bottom:1.5px solid var(--ink);white-space:nowrap}
+  thead th.num{text-align:right}
+  tbody td{padding:14px 12px;border-bottom:1px solid var(--line);font-size:15px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  tbody td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  tbody tr:hover{background:var(--card)}
+  .uname{font-weight:600}
+  .uname:before{content:"@";color:var(--amber);font-weight:700}
+  .mail{color:var(--muted);font-size:13px}
+  .cat{display:inline-block;font-size:12px;font-weight:600;padding:4px 11px;border-radius:999px;background:#ece6d8;text-transform:capitalize;white-space:nowrap}
+  .eng{color:var(--deep);font-weight:700}
+  .empty{text-align:center;padding:60px 20px;color:var(--muted);font-family:Fraunces,serif;font-size:20px}
+
+  .eng-full{display:inline}
+  .eng-short{display:none}
+  @media(max-width:640px){
+    col.c-user{width:40%}
+    col.c-cat{width:24%}
+    col.c-fol{width:18%}
+    col.c-eng{width:18%}
+    .mail,thead th.mail-h,col.c-mail{display:none}
+    tbody td{padding:13px 6px;font-size:14px}
+    thead th{padding:0 6px 10px}
+    table{min-width:0}
+    .count{margin-left:0;width:100%}
+    .eng-full{display:none}
+    .eng-short{display:inline}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Vitrin<small>Influencer Kataloğu</small></div>
+  <nav>
+    <a href="/" class="active">Katalog</a>
+    <a href="/ekle.html">Yeni Kayıt</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <h1 class="lead">Doğru sesi, <em>doğru kitleyle</em> eşleştir.</h1>
+
+  <div class="controls">
+    <div class="ctl-label">Kategoriye göre filtrele · birden fazla seçilebilir</div>
+    <div class="chips" id="chips"></div>
+    <div class="sortrow">
+      <select id="sort">
+        <option value="followers_desc">Takipçi · çoktan aza</option>
+        <option value="followers_asc">Takipçi · azdan çoğa</option>
+        <option value="engagement_desc">Etkileşim · çoktan aza</option>
+        <option value="engagement_asc">Etkileşim · azdan çoğa</option>
+        <option value="alpha_asc">Alfabetik · A→Z</option>
+        <option value="alpha_desc">Alfabetik · Z→A</option>
+      </select>
+      <button class="clearbtn" id="clear">Filtreyi temizle</button>
+      <span class="count" id="count"></span>
+    </div>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <colgroup>
+        <col class="c-user"><col class="c-cat"><col class="c-fol"><col class="c-eng"><col class="c-mail">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Kullanıcı</th>
+          <th>Kategori</th>
+          <th class="num">Takipçi</th>
+          <th class="num"><span class="eng-full">Etkileşim</span><span class="eng-short">Etk.</span></th>
+          <th class="mail-h">Mail</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <div class="empty" id="empty" style="display:none">Bu filtreyle eşleşen kayıt yok.</div>
+</div>
+
+<script>
+const selected = new Set();
+let cats = [];
+
+function fmt(n){
+  if(n>=1000000) return (n/1000000).toFixed(n%1000000?1:0)+'M';
+  if(n>=1000) return (n/1000).toFixed(n%1000?1:0)+'K';
+  return n;
+}
+
+async function loadCats(){
+  cats = await (await fetch('/api/categories')).json();
+  const box = document.getElementById('chips');
+  box.innerHTML = cats.map(c=>`<span class="chip" data-c="${c}">${c}</span>`).join('');
+  box.querySelectorAll('.chip').forEach(ch=>{
+    ch.onclick=()=>{
+      const c=ch.dataset.c;
+      if(selected.has(c)){selected.delete(c);ch.classList.remove('on');}
+      else{selected.add(c);ch.classList.add('on');}
+      load();
+    };
+  });
+}
+
+async function load(){
+  const params=new URLSearchParams();
+  if(selected.size) params.set('categories',[...selected].join(','));
+  params.set('sort',document.getElementById('sort').value);
+  const data=await (await fetch('/api/influencers?'+params)).json();
+  const rows=document.getElementById('rows');
+  document.getElementById('count').textContent=data.length+' kayıt';
+  document.getElementById('empty').style.display=data.length?'none':'block';
+  rows.innerHTML=data.map(r=>`
+    <tr>
+      <td class="uname">${r.username}</td>
+      <td><span class="cat">${r.category}</span></td>
+      <td class="num">${fmt(r.followers)}</td>
+      <td class="num eng">%${r.engagement}</td>
+      <td class="mail">${r.email}</td>
+    </tr>`).join('');
+}
+
+document.getElementById('sort').onchange=load;
+document.getElementById('clear').onclick=()=>{
+  selected.clear();
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  load();
+};
+
+loadCats().then(load);
+</script>
+</body>
+</html>
